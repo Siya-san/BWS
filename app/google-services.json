@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "777419137437",
+    "project_id": "bws-app-38373",
+    "storage_bucket": "bws-app-38373.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777419137437:android:02539067c4d043d05bcf74",
+        "android_client_info": {
+          "package_name": "com.example.myapplication2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDysQWoJo2CAj_7QcEErjv-vAHPicJUHOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Birds We See</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_sightings">Sightings</string>
+    <string name="title_settings">Settings</string>
+    <string name="map_dashboard">Map Dashboard</string>
+    <string name="get_directions_to_hotspot">Get Directions to Hotspot</string>
+    <string name="scientific_name">Scientific Name</string>
+    <string name="common_name">Common Name</string>
+    <string name="location">Location</string>
+    <string name="date_seen">Date Seen</string>
+    <string name="register">Register</string>
+    <string name="password">Password</string>
+    <string name="re_enter_password">Re-enter Password</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="email_or_username">Email or Username</string>
+    <string name="login">Login</string>
+
+    <!-- Firestore Strings -->
+    <string name="collection_users">Users</string>
+    <string name="collection_user_locations">User Locations</string>
+    <string name="app_logo">App logo</string>
+    <string name="create_my_sighting">Create My Sighting</string>
+</resources>
