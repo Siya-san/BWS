@@ -20,6 +20,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.bws.ui.UserClient
 import com.example.bws.ui.models.User
 import com.example.bws.ui.models.UserLocation
 import com.example.myapplication2.databinding.ActivityMainBinding
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private  var userLocation: UserLocation? = null
     private lateinit var fireStore: FirebaseFirestore
+    private lateinit var userClient: UserClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,15 +66,18 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
     private fun getUserDetails() {
+
         if (userLocation == null) {
             userLocation =  UserLocation()
-            var userRef = fireStore.collection(getString(R.string.collection_users))
+            userClient= UserClient()
+            val userRef = fireStore.collection(getString(R.string.collection_users))
                 .document(FirebaseAuth.getInstance().uid!!)
             userRef.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "onComplete: successfully set the user client.")
                     val user: User? = task.result.toObject(User::class.java)
-                    userLocation!!.setUser(user)
+                    userLocation!!.user = user
+                    userClient.user  =user
                     getLastKnownLocation()
                 }
             }
@@ -96,8 +101,8 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val location = task.result
                     val geoPoint = GeoPoint(location.latitude, location.longitude)
-                    userLocation!!.setGeo_point(geoPoint)
-                    userLocation!!.setTimestamp(null)
+                    userLocation!!.geo_point = geoPoint
+                    userLocation!!.timestamp = null
                     saveUserLocation()
                 }
             })
