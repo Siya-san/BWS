@@ -1,51 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
- xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp" >
-
-
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
         android:gravity="center"
         android:orientation="vertical">
 
+        <TextView
 
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:labelFor="@id/mapView"
+            android:padding="15dp"
+            android:text="@string/hotspots"
+            android:textAlignment="center"
+            android:textSize="24sp" />
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
 
 
             />
-        <Button
-            android:id="@+id/button_hotspot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:text="@string/get_directions_to_hotspot"
-             />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sighting_list"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp"
-            tools:listitem="@layout/sighting_list_items" />
-
-
 
 
 
 
     </LinearLayout>
-    </ScrollView>
+
 
 

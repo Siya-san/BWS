@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/green"
+    android:background="@drawable/background"
+    android:gravity="center_horizontal|center_vertical"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+
     tools:context="com.example.bws.ui.Register">
 
     <EditText
@@ -12,14 +14,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="@string/username" />
+        android:hint="@string/username"
+        android:background="@drawable/text_input"
+        android:padding="15dp"
+        android:textColor="@color/green"
+        android:textColorHint="@color/green"
+        android:textSize="24sp"/>
 
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="@string/email" />
+        android:hint="@string/email"
+        android:background="@drawable/text_input"
+        android:padding="15dp"
+        android:textColor="@color/green"
+        android:textColorHint="@color/green"
+        android:textSize="24sp"/>
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -27,7 +39,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:background="@drawable/text_input"
+        android:padding="15dp"
+        android:textColor="@color/green"
+        android:textColorHint="@color/green"
+        android:textSize="24sp"/>
 
 
 
@@ -37,13 +54,18 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:hint="@string/re_enter_password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:background="@drawable/text_input"
+        android:padding="15dp"
+        android:textColor="@color/green"
+        android:textColorHint="@color/green"
+        android:textSize="24sp"/>
 
     <Button
         android:id="@+id/buttonRegister"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:textSize="20sp"
         android:text="@string/register" />
 </LinearLayout>

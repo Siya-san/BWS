@@ -7,39 +7,69 @@
     android:orientation="vertical">
 
 
-
     <TextView
         android:id="@+id/textUnitMeasurement"
+        android:text="@string/unit_of_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:padding="15dp"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+    <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Unit of Measurement"
+        android:orientation="vertical"
+        android:layout_margin="16dp"
+        android:background="@drawable/text_input">
+
+    <RadioButton android:id="@+id/radio_km"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_margin="16dp"
+        android:text="@string/kilometers"
+        android:textSize="18sp"
+        android:textColor="@color/green"
         />
 
-    <Spinner
-        android:id="@+id/spinnerUnit"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <RadioButton
+        android:id="@+id/radio_miles"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
         android:layout_margin="16dp"
-        android:entries="@array/unit_array"
-      />
-
+        android:text="@string/miles"
+        android:textSize="18sp"
+        android:textColor="@color/green"/>
+    </RadioGroup>
     <TextView
+        android:id="@+id/textRadiusLabel"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:padding="15dp"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:labelFor="@id/textRadius"
+        android:text="@string/search_radius" />
+    <EditText
         android:id="@+id/textRadius"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Search Radius"
-        />
-
-    <SeekBar
-        android:id="@+id/seekBarRadius"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:layout_margin="16dp"
-        android:max="100"
-        />
+
+        android:background="@drawable/text_input"
+
+        android:inputType="number"
+        android:padding="15dp"
+        android:textColor="@color/green"
+
+        android:textSize="18sp"
+        android:autofillHints="250" />
+
+    <Button
+        android:id="@+id/saveChanges"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="@string/save_changes" />
+
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -20,6 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+
 import com.example.bws.ui.UserClient
 import com.example.bws.ui.models.User
 import com.example.bws.ui.models.UserLocation
@@ -31,7 +33,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 
@@ -65,19 +67,22 @@ class MainActivity : AppCompatActivity() {
         fireStore = FirebaseFirestore.getInstance();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
+
+
     private fun getUserDetails() {
 
         if (userLocation == null) {
             userLocation =  UserLocation()
             userClient= UserClient()
-            val userRef = fireStore.collection(getString(R.string.collection_users))
+            val userRef: DocumentReference = fireStore.collection(getString(R.string.collection_users))
                 .document(FirebaseAuth.getInstance().uid!!)
             userRef.get().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "onComplete: successfully set the user client.")
-                    val user: User? = task.result.toObject(User::class.java)
+                    val user = task.result.toObject(User::class.java)
                     userLocation!!.user = user
-                    userClient.user  =user
+                    Log.d(TAG, "UserId "+ userLocation!!.user.userId)
+                    (applicationContext as UserClient).user = user
                     getLastKnownLocation()
                 }
             }
@@ -89,24 +94,38 @@ class MainActivity : AppCompatActivity() {
 
     private fun getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.")
+
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            // If permission is not granted, request permission or handle the case accordingly
             return
         }
-        fusedLocationClient.lastLocation
-            .addOnCompleteListener(OnCompleteListener<Location> { task ->
-                if (task.isSuccessful) {
-                    val location = task.result
+
+        // Get the last known location from the FusedLocationProviderClient
+        fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val location = task.result
+
+                // Check if location is null before accessing its properties
+                if (location != null) {
                     val geoPoint = GeoPoint(location.latitude, location.longitude)
-                    userLocation!!.geo_point = geoPoint
-                    userLocation!!.timestamp = null
+                    userLocation?.geo_point = geoPoint
+                    userLocation?.timestamp = null // or assign a proper timestamp if needed
                     saveUserLocation()
+                    // Optionally, start location service if necessary
+                    // startLocationService()
+                } else {
+                    Log.e(TAG, "Location is null. Ensure location services are enabled and try again.")
                 }
-            })
+            } else {
+                Log.e(TAG, "Task unsuccessful. Unable to get last known location.")
+            }
+        }
     }
+
     private fun saveUserLocation() {
         var locationRef = fireStore
             .collection(getString(R.string.collection_user_locations))
@@ -115,9 +134,9 @@ class MainActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 Log.d(
                     TAG, "saveUserLocation: \ninserted user location into database." +
-                            "\n latitude: " + userLocation!!.getGeo_point()
-                        .getLatitude() +
-                            "\n longitude: " + userLocation!!.getGeo_point().getLongitude()
+                            "\n latitude: " + userLocation!!.geo_point
+                        .latitude +
+                            "\n longitude: " + userLocation!!.geo_point.longitude
                 )
             }
         }
@@ -225,6 +244,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         if (checkMapServices()) {

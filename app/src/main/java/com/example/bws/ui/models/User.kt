@@ -9,6 +9,7 @@ data class User(
     var userId: String? = null,
     var username: String? = null,
     var avatar: String? = null
+
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(

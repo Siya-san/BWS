@@ -44,7 +44,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
@@ -61,10 +61,11 @@ dependencies {
     //google maps sdk
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     // Maps utils (required for custom markers)
-    implementation ("com.google.maps.android:android-maps-utils:0.5")
+
 
     // Google play services for location information
-    implementation ("com.google.android.gms:play-services-location:15.0.1")
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("com.google.maps.android:android-maps-utils:2.2.3")
 }
 secrets {
     // To add your Maps API key to this project:

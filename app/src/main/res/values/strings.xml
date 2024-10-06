@@ -22,7 +22,15 @@
     <!-- Firestore Strings -->
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
+    <string name="collection_user_settings">User Settings</string>
     <string name="app_logo">App logo</string>
     <string name="create_my_sighting">Create My Sighting</string>
+    <string name="unit_of_measurement">Unit of Measurement</string>
+    <string name="search_radius">Search Radius</string>
+    <string name="kilometers">Kilometers</string>
+    <string name="miles">Miles</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="nav_register">Go to Registration</string>
+    <string name="hotspots">Hotspots</string>
 
 </resources>

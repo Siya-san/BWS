@@ -1,25 +1,23 @@
 package com.example.bws.ui
+
 import android.app.Application
-import android.os.Parcel
-import android.os.Parcelable
 import com.example.bws.ui.models.User
 
-
-class UserClient() : Application() {
+class UserClient : Application() {
 
     var user: User? = null
         get() {
-            println("Getting count: $field")
+            println("Getting user: $field")
             return field
         }
         set(value) {
-            println("Setting count to $value")
+            println("Setting user to $value")
             field = value
         }
 
     companion object {
-        var user: User? = null
+        fun getInstance(application: Application): UserClient {
+            return application as UserClient
+        }
     }
-
-
 }

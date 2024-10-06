@@ -32,6 +32,8 @@ View.OnClickListener{
     // widgets
     private var email: EditText? = null
     private var password: EditText? = null
+    private val testEmail:String="gorg@gmail.com"
+    private val testPassword:String="123456"
     private lateinit var loginButton: Button
     private lateinit var goRegisterButton: Button
     private lateinit var firebaseAuth: FirebaseAuth
@@ -59,19 +61,20 @@ View.OnClickListener{
 
 
 
-     override fun onStart() {
+  /*   override fun onStart() {
         super.onStart()
-        val user: FirebaseUser? = firebaseAuth.currentUser
+        *//*val user: FirebaseUser? = firebaseAuth.currentUser
         if (user != null) {
             val intent = Intent(this@Login, MainActivity::class.java)
             startActivity(intent)
-        }
-    }
+        }*//*
 
- /*   override fun onStop() {
+    }*/
+
+/*    override fun onStop() {
         super.onStop()
         if (firebaseAuth != null) {
-            FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener!!)
+            FirebaseAuth.getInstance().removeAuthStateListener(firebaseAuth!!)
         }
     }*/
 

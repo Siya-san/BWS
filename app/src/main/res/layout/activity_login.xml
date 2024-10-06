@@ -4,40 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green"
-
+    android:background="@drawable/background"
+    android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical"
+
     tools:context="com.example.bws.ui.Login">
 
-    <Button
-        android:id="@+id/buttonGoRegistration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginStart="16dp"
-        android:text="@string/register" />
+
 
     <EditText
         android:id="@+id/editTextEmailL"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:layout_margin="16dp"
-        android:hint="@string/email_or_username" />
+        android:autofillHints="@string/email"
+        android:background="@drawable/text_input"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="@color/green"
+        android:textColorHint="@color/green"
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="65dp"
         android:layout_margin="16dp"
         android:hint="@string/password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:background="@drawable/text_input"
+        android:padding="15dp"
+        android:textColor="@color/green"
+        android:textColorHint="@color/green"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:textSize="20sp"
         android:text="@string/login" />
+
+    <Button
+        android:id="@+id/buttonGoRegistration"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+
+        android:layout_gravity="center|bottom"
+
+        android:layout_marginTop="50dp"
+        android:background="@drawable/text_input"
+        android:text="@string/nav_register" />
 
 
 </LinearLayout>
