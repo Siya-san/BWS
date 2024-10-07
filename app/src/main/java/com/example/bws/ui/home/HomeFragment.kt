@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+
+import com.example.bws.MainActivity
 import com.example.myapplication2.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -21,13 +22,14 @@ class HomeFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
+
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
-
+binding.create.setOnClickListener {
+    val mainActivity = activity as MainActivity
+    mainActivity.goToSightingCapture()}
 
         return root
     }

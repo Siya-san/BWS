@@ -4,26 +4,26 @@ package com.example.bws.ui.dashboard
 
 
 
-import android.content.ContentValues
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.example.bws.MyClusterManagerRenderer
+import com.example.bws.MainActivity
 import com.example.bws.ui.UserClient
-import com.example.bws.ui.models.BirdSighting
-import com.example.bws.ui.models.ClusterMarker
 import com.example.bws.ui.models.UserLocation
-import com.example.bws.ui.models.UserSettings
-import com.example.myapplication2.MainActivity
 import com.example.myapplication2.R
 import com.example.myapplication2.databinding.FragmentDashboardBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -32,10 +32,16 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.DirectionsApiRequest
+import com.google.maps.GeoApiContext
+import com.google.maps.PendingResult
+import com.google.maps.internal.PolylineEncoding
+import com.google.maps.model.DirectionsResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +51,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class DashboardFragment : Fragment(), OnMapReadyCallback {
+class DashboardFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private val MAPVIEW_BUNDLE_KEY: String="AIzaSyDvAMW0zSS3HZmyX0aXSca7pEZOjIgdJ50"
     private var _binding: FragmentDashboardBinding? = null
@@ -53,9 +59,9 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
     private var googleMap: GoogleMap? = null
     private lateinit var userPosition: UserLocation
     private var mapBoundary: LatLngBounds? = null
-    private var clusterManager: ClusterManager<ClusterMarker>? = null
-    private var clusterManagerRenderer: MyClusterManagerRenderer? = null
-    private lateinit var birdSightingArrayList : ArrayList<BirdSighting>
+    private var geoApiContext: GeoApiContext? = null
+
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -67,7 +73,7 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
             savedInstanceState: Bundle?
     ): View {
 
-        val userClient = UserClient.getInstance(requireActivity().application)
+
 
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -80,9 +86,12 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        // Perform MapView cleanup here before nullifying binding
+        binding.mapView.onDestroy()
         _binding = null
+        super.onDestroyView()
     }
+
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {
         // *** IMPORTANT ***
@@ -94,13 +103,14 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
         }
         binding.mapView.onCreate(mapViewBundle)
         binding.mapView.getMapAsync(this)
+        if (geoApiContext == null) {
+            geoApiContext = GeoApiContext.Builder()
+                .apiKey(getString(R.string.google_maps_api_key))
+                .build()
+        }
     }
 
- /*   private fun initUserListRecyclerView() {
-        mUserRecyclerAdapter = UserRecyclerAdapter(mUserList)
-        mUserListRecyclerView.setAdapter(mUserRecyclerAdapter)
-        mUserListRecyclerView.setLayoutManager(LinearLayoutManager(activity))
-    }*/
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -127,6 +137,7 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
         binding.mapView.onStop()
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(map: GoogleMap) {
         if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
@@ -142,8 +153,9 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
         map.isMyLocationEnabled = true
         googleMap = map
         addMapMarkers()
+        callAPI()
+        googleMap!!.setOnInfoWindowClickListener(this)
 
-            callAPI()
 
 
     }
@@ -188,14 +200,16 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
             return
         }
         var distance = 20
-        googleMap?.let { map ->
-            getUserLocation { userLocation ->
+
+        getUserLocation { userLocation ->
                 // Set a boundary to start
                 userLocation?.let { location ->
-                    getUserSettings { userSettings -> userSettings?.let{settings ->
-                       distance = settings.getDistance()?.toInt() ?: 20
-                    } }
 
+                    val userClient = UserClient.getInstance(requireActivity().application)
+                    val settings = userClient.userSettings
+                    if (settings != null) {
+                        distance = settings.getDistance()?.toInt() ?: 20
+                    }
                     val urlString = "https://api.ebird.org/v2/data/obs/geo/recent?lat=${location.geo_point.latitude}&lng=${location.geo_point.longitude}&dist=$distance"
 
                     // Launch coroutine for network call
@@ -216,12 +230,10 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
                     Log.e(TAG, "callAPI: userLocation is null")
                 }
             }
-        } ?: run {
-            Log.e(TAG, "callAPI: googleMap is null")
-        }
+
     }
 
-    private suspend fun fetchDataFromApi(urlString: String): String? {
+    private  fun fetchDataFromApi(urlString: String): String? {
         val url = URL(urlString)
         val connection = url.openConnection() as HttpURLConnection
         return try {
@@ -267,6 +279,7 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
     }
 
     // Extension function to check network availability
+    @Deprecated("Deprecated in Java")
     private fun MainActivity.isNetworkAvailable(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
@@ -274,7 +287,7 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setCameraView() {
-        getUserLocation() { userLocation ->
+        getUserLocation { userLocation ->
             // Set a boundary to start
             if (userLocation != null) {
                 if (userLocation.geo_point != null) {
@@ -289,7 +302,7 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
                     )
                     googleMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBoundary!!, 0))
                 } else {
-                    Log.e(ContentValues.TAG, "GeoPoint is null")
+                    Log.e(TAG, "GeoPoint is null")
                 }
             }
         }
@@ -307,40 +320,20 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
                 if (document != null && document.exists()) {
                     // Convert Firestore document to UserLocation object
                     val userPosition = document.toObject(UserLocation::class.java)
-                    Log.d(ContentValues.TAG, "User location retrieved: $userPosition")
+                    Log.d(TAG, "User location retrieved: $userPosition")
                     onLocationReceived(userPosition) // Pass the userPosition back
                 } else {
-                    Log.d(ContentValues.TAG, "No such document")
+                    Log.d(TAG, "No such document")
                     onLocationReceived(null)
                 }
             } else {
-                Log.e(ContentValues.TAG, "Error getting document: ${task.exception}")
+                Log.e(TAG, "Error getting document: ${task.exception}")
                 onLocationReceived(null)
             }
         }
     }
 
-    private fun getUserSettings(onSettingsReceived: (UserSettings?) -> Unit) {
-        val locationsRef = fireStore.collection(getString(R.string.collection_user_settings)).document(FirebaseAuth.getInstance().uid!!)
 
-        locationsRef.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                if (document != null && document.exists()) {
-                    // Convert Firestore document to UserLocation object
-                    val userSettings = document.toObject(UserSettings::class.java)
-                    Log.d(ContentValues.TAG, "User Settings retrieved: $userSettings")
-                    onSettingsReceived(userSettings) // Pass the userPosition back
-                } else {
-                    Log.d(ContentValues.TAG, "No such document")
-                    onSettingsReceived(null)
-                }
-            } else {
-                Log.e(ContentValues.TAG, "Error getting document: ${task.exception}")
-                onSettingsReceived(null)
-            }
-        }
-    }
 
 
     override fun onPause() {
@@ -348,14 +341,117 @@ class DashboardFragment : Fragment(), OnMapReadyCallback {
         super.onPause()
     }
 
-    override fun onDestroy() {
-        binding.mapView.onDestroy()
-        super.onDestroy()
-    }
-
     override fun onLowMemory() {
         super.onLowMemory()
         binding.mapView.onLowMemory()
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        val userClient = UserClient.getInstance(requireActivity().application)
+        val user = userClient.user
+        if (user != null) {
+            if (marker.snippet.equals(user.username)) {
+                marker.hideInfoWindow()
+            } else {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
+                builder.setMessage("Get directions to the "+marker.title)
+                    .setCancelable(true)
+                    .setPositiveButton("Yes"
+                    ) { dialog, _ ->
+                        calculateDirections(marker)
+                        dialog.dismiss() }
+                    .setNegativeButton("No"
+                    ) { dialog, _ -> dialog.cancel() }
+                val alert: AlertDialog = builder.create()
+                alert.show()
+            }
+        }
+    }
+    private fun calculateDirections(marker: Marker) {
+        Log.d(TAG, "calculateDirections: calculating directions.")
+
+        val destination = com.google.maps.model.LatLng(
+            marker.position.latitude,
+            marker.position.longitude
+        )
+
+        val directions = DirectionsApiRequest(geoApiContext)
+        directions.alternatives(false)
+
+        getUserLocation { userLocation ->
+            if (userLocation != null) {
+                directions.origin(
+                    com.google.maps.model.LatLng(
+                        userLocation.geo_point.latitude,
+                        userLocation.geo_point.longitude
+                    )
+                )
+
+                Log.d(TAG, "calculateDirections: destination: $destination")
+
+                // Set the destination and the callback only after origin is set
+                directions.destination(destination).setCallback(object : PendingResult.Callback<DirectionsResult> {
+                    override fun onResult(result: DirectionsResult) {
+                        Log.d(TAG, "calculateDirections: routes: ${result.routes[0]}")
+                        Log.d(TAG, "calculateDirections: duration: ${result.routes[0].legs[0].duration}")
+                        Log.d(TAG, "calculateDirections: distance: ${result.routes[0].legs[0].distance}")
+                        Log.d(TAG, "calculateDirections: geocodedWayPoints: ${result.geocodedWaypoints[0]}")
+                        addPolylines(result)
+                    }
+
+                    override fun onFailure(e: Throwable) {
+                        Log.e(TAG, "calculateDirections: Failed to get directions: ${e.message}")
+                    }
+                })
+            } else {
+                Log.e(TAG, "calculateDirections: User location is null, cannot calculate directions.")
+            }
+        }
+    }
+
+    private fun addPolylines(result: DirectionsResult) {
+        Handler(Looper.getMainLooper()).post {
+            Log.d(TAG, "run: result routes: ${result.routes.size}")
+
+            for (route in result.routes) {
+                Log.d(TAG, "run: leg: ${route.legs[0]}")
+
+                // Decode the polyline path
+                val decodedPath = PolylineEncoding.decode(route.overviewPolyline.encodedPath)
+
+                val newDecodedPath = ArrayList<LatLng>()
+
+                // Loop through all the LatLng coordinates of one polyline
+                for (latLng in decodedPath) {
+                    newDecodedPath.add(LatLng(latLng.lat, latLng.lng))
+                }
+
+                // Add the polyline to the GoogleMap
+                val polyline = googleMap?.addPolyline(PolylineOptions().addAll(newDecodedPath))
+
+                // Set color and make the polyline clickable
+                if (polyline != null) {
+                    polyline.color = ContextCompat.getColor(requireContext(), R.color.orange_700)
+
+                    polyline.isClickable = true
+                    zoomRoute(polyline.points)
+                }
+            }
+        }
+    }
+    private fun zoomRoute(lstLatLngRoute: List<LatLng?>?) {
+        if (googleMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return
+        val boundsBuilder = LatLngBounds.Builder()
+        for (latLngPoint in lstLatLngRoute) boundsBuilder.include(
+            latLngPoint!!
+        )
+        val routePadding = 120
+        val latLngBounds = boundsBuilder.build()
+        googleMap!!.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(latLngBounds, routePadding),
+            600,
+            null
+        )
     }
 
 

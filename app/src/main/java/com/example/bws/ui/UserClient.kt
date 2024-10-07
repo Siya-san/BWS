@@ -2,6 +2,7 @@ package com.example.bws.ui
 
 import android.app.Application
 import com.example.bws.ui.models.User
+import com.example.bws.ui.models.UserSettings
 
 class UserClient : Application() {
 
@@ -15,7 +16,18 @@ class UserClient : Application() {
             field = value
         }
 
+    var userSettings: UserSettings? = null
+        get() {
+            println("Getting userSettings: $field")
+            return field
+        }
+        set(value) {
+            println("Setting userSettings to $value")
+            field = value
+        }
+
     companion object {
+        @JvmStatic
         fun getInstance(application: Application): UserClient {
             return application as UserClient
         }

@@ -1,15 +1,12 @@
-package com.example.myapplication2
+package com.example.bws
 
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
-
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -18,19 +15,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-
 import com.example.bws.ui.UserClient
 import com.example.bws.ui.models.User
 import com.example.bws.ui.models.UserLocation
+import com.example.myapplication2.R
 import com.example.myapplication2.databinding.ActivityMainBinding
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -41,9 +38,9 @@ import com.google.firebase.firestore.GeoPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    val ERROR_DIALOG_REQUEST = 9001
-    val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
-    val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
+    private val ERROR_DIALOG_REQUEST = 9001
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9002
+    private val PERMISSIONS_REQUEST_ENABLE_GPS = 9003
     private var locationPermissionGranted = false
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private  var userLocation: UserLocation? = null
@@ -61,11 +58,16 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_my_sighting_view,R.id.navigation_notifications,R.id.navigation_settings))
+            R.id.navigation_home,
+            R.id.navigation_dashboard,
+            R.id.navigation_my_sighting_view,
+            R.id.navigation_notifications,
+            R.id.navigation_settings
+        ))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        fireStore = FirebaseFirestore.getInstance();
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fireStore = FirebaseFirestore.getInstance()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
 
@@ -115,8 +117,7 @@ class MainActivity : AppCompatActivity() {
                     userLocation?.geo_point = geoPoint
                     userLocation?.timestamp = null // or assign a proper timestamp if needed
                     saveUserLocation()
-                    // Optionally, start location service if necessary
-                    // startLocationService()
+
                 } else {
                     Log.e(TAG, "Location is null. Ensure location services are enabled and try again.")
                 }
@@ -127,7 +128,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveUserLocation() {
-        var locationRef = fireStore
+        val locationRef = fireStore
             .collection(getString(R.string.collection_user_locations))
             .document(FirebaseAuth.getInstance().uid!!)
         locationRef.set(userLocation!!).addOnCompleteListener { task ->
@@ -154,15 +155,16 @@ class MainActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
             .setCancelable(false)
-            .setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, id ->
+            .setPositiveButton("Yes") { _, _ ->
                 val enableGpsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+
                 startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS)
-            })
+            }
         val alert: AlertDialog = builder.create()
         alert.show()
     }
 
-    fun isMapsEnabled(): Boolean {
+    private fun isMapsEnabled(): Boolean {
         val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps()
@@ -185,16 +187,16 @@ class MainActivity : AppCompatActivity() {
         ) {
             locationPermissionGranted = true
             getUserDetails()
-           // getChatrooms()
+
         } else {
             ActivityCompat.requestPermissions(
-                this, arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             )
         }
     }
 
-    fun isServicesOK(): Boolean {
+    private fun isServicesOK(): Boolean {
         Log.d(TAG, "isServicesOK: checking google services version")
         val available =
             GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this@MainActivity)
@@ -230,6 +232,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "onActivityResult: called.")
@@ -237,20 +240,28 @@ class MainActivity : AppCompatActivity() {
             PERMISSIONS_REQUEST_ENABLE_GPS -> {
                 if (locationPermissionGranted) {
                     getUserDetails()
-                   // getChatrooms()
+
                 } else {
                     getLocationPermission()
                 }
             }
         }
     }
+    fun goToSightingCapture() {
 
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        navController.navigate(R.id.navigation_capture, Bundle().apply {
+
+        })
+    }
     override fun onResume() {
         super.onResume()
         if (checkMapServices()) {
             if (locationPermissionGranted) {
                 getUserDetails()
-               // getChatrooms()
+
             } else {
                 getLocationPermission()
             }

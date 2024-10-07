@@ -1,14 +1,28 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/text_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="@string/my_sighting"
+android:textColor="@color/green_700"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listViewObservations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        tools:listitem="@layout/sighting_list_items"/>
+      android:layout_margin="25dp"
 
-</RelativeLayout>
+        android:background="@drawable/text_input"
+        android:padding="5dp"
+        tools:listitem="@layout/sighting_list_items" />
+
+</LinearLayout>

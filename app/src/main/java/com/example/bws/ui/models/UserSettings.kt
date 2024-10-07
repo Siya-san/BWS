@@ -1,6 +1,8 @@
 package com.example.bws.ui.models
 
 import android.annotation.SuppressLint
+import android.app.Application
+import com.example.bws.ui.UserClient
 
 
 class UserSettings(  ) {
@@ -49,6 +51,10 @@ private var unit: String? = null
           ", distance=" + distance +
           '}'
  }
-
+ companion object {
+  fun getInstance(application: Application): UserSettings {
+   return application as UserSettings
+  }
+ }
 
 }

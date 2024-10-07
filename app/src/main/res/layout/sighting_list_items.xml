@@ -2,61 +2,93 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="15dp"
+    android:background="@drawable/item_background"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:labelFor="@id/comName"
-            android:text="@string/common_name"
-            android:textAppearance="?attr/textAppearanceListItem" />
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/comName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:labelFor="@id/sighting_name"
+            android:text="@string/sighting_name"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/green_700"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/sighting_name"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/green_500"
+
+            android:textSize="24sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:labelFor="@id/sciName"
-            android:text="@string/scientific_name"
-            android:textAppearance="?attr/textAppearanceListItem" />
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/sciName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:labelFor="@id/date_seen"
+            android:text="@string/date_seen"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/green_700"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/date_seen"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/green_500"
+            android:textSize="24sp" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:labelFor="@id/locName"
             android:text="@string/location"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/green_700"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/locName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/green_500"
+            android:textSize="24sp" />
     </LinearLayout>
-
-
 
 
 </LinearLayout>

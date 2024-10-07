@@ -23,6 +23,8 @@
     <string name="collection_users">Users</string>
     <string name="collection_user_locations">User Locations</string>
     <string name="collection_user_settings">User Settings</string>
+    <string name="collection_user_sightings">User Sightings</string>
+
     <string name="app_logo">App logo</string>
     <string name="create_my_sighting">Create My Sighting</string>
     <string name="unit_of_measurement">Unit of Measurement</string>
@@ -32,5 +34,13 @@
     <string name="save_changes">Save Changes</string>
     <string name="nav_register">Go to Registration</string>
     <string name="hotspots">Hotspots</string>
-
+    <string name="captured_image">Captured Image</string>
+    <string name="capture_image">Capture Image</string>
+    <string name="bird_species">Bird Name</string>
+    <string name="title_capture">Capture Sightings</string>
+    <string name="save_sighting">Save Sighting</string>
+    <string name="google_maps_api_key">AIzaSyDvAMW0zSS3HZmyX0aXSca7pEZOjIgdJ50</string>
+    <string name="sighting_name">Sighting Name</string>
+    <string name="my_sighting">My Sightings</string>
+    <string name="capture_sighting">Capture sighting</string>
 </resources>
