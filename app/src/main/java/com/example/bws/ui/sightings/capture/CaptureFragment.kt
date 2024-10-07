@@ -37,7 +37,7 @@ class CaptureFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storageReference: StorageReference
     private var imageUri: Uri? = null
-    private lateinit var uploadButton: Button
+
     private lateinit var save: Button
     private lateinit var imageView: ImageView
     private lateinit var name: EditText
@@ -61,13 +61,11 @@ class CaptureFragment : Fragment() {
 
 
         imageView = view.findViewById(R.id.imageView)
-        uploadButton = view.findViewById(R.id.uploadButton)
+
         name=view.findViewById(R.id.editName)
         save=view.findViewById(R.id.buttonSaveSighting)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        uploadButton.setOnClickListener {
-            takePicture()
-        }
+
         save.setOnClickListener {
             saveImageUriToFirestore()
         }
