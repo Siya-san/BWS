@@ -43,4 +43,5 @@
     <string name="sighting_name">Sighting Name</string>
     <string name="my_sighting">My Sightings</string>
     <string name="capture_sighting">Capture sighting</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

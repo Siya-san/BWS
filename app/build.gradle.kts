@@ -70,6 +70,9 @@ dependencies {
     implementation ("com.google.maps.android:android-maps-utils:2.2.3")
     implementation ("com.google.maps:google-maps-services:2.2.0")
     implementation ("org.slf4j:slf4j-simple:1.7.25")
+
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 }
 secrets {
     // To add your Maps API key to this project:

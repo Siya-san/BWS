@@ -21,8 +21,10 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.example.bws.MainActivity
 import com.example.bws.ui.UserClient
+import com.example.bws.ui.models.BirdSighting
 import com.example.bws.ui.models.UserLocation
 import com.example.myapplication2.R
 import com.example.myapplication2.databinding.FragmentDashboardBinding
@@ -37,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.maps.DirectionsApiRequest
 import com.google.maps.GeoApiContext
 import com.google.maps.PendingResult
@@ -60,7 +63,9 @@ class DashboardFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
     private lateinit var userPosition: UserLocation
     private var mapBoundary: LatLngBounds? = null
     private var geoApiContext: GeoApiContext? = null
-
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var sightingsArrayList : ArrayList<BirdSighting>
 
 
     // This property is only valid between onCreateView and
@@ -154,6 +159,7 @@ class DashboardFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
         googleMap = map
         addMapMarkers()
         callAPI()
+        useSightings()
         googleMap!!.setOnInfoWindowClickListener(this)
 
 
@@ -277,7 +283,50 @@ class DashboardFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindow
             )
         }
     }
+private fun useSightings(){
 
+    sightingsArrayList = arrayListOf()
+    firestore = FirebaseFirestore.getInstance()
+    auth = FirebaseAuth.getInstance()
+    val collectionRef = firestore.collection(getString(R.string.collection_user_sightings))
+    collectionRef.addSnapshotListener { snapshot: QuerySnapshot?, error: Exception? ->
+        if (error != null) {
+            Log.e("Firestore", "Error fetching data", error)
+            return@addSnapshotListener
+        }
+
+        if (auth.currentUser == null) {
+            Log.e("Firestore", "User is not authenticated, cannot fetch data.")
+            return@addSnapshotListener
+        }
+
+        snapshot?.let {
+            Log.d("Firestore", "Snapshot retrieved, size: ${it.size()}")
+            sightingsArrayList.clear()
+
+            for (document in it.documents) {
+                val sighting = document.toObject(BirdSighting::class.java)
+                Log.d("Firestore", "Sighting data: ${document.data}")
+
+                sighting?.let { sightingObj ->
+                    if (sightingObj.user == auth.currentUser?.uid) {
+                        sightingsArrayList.add(sightingObj)
+                        Log.d("Firestore", "Sighting added to list: $sightingObj")
+                    }
+                }
+            }
+            for(item in sightingsArrayList){
+                val position = LatLng(item.geo_point!!.latitude, item.geo_point!!.longitude)
+                googleMap?.addMarker(
+                    MarkerOptions()
+                        .position(position)
+                        .title("User Sighting")
+                        .snippet("Sighted ${item.name} on the ${item.timestamp},")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+                )
+            }
+
+}}}
     // Extension function to check network availability
     @Deprecated("Deprecated in Java")
     private fun MainActivity.isNetworkAvailable(): Boolean {

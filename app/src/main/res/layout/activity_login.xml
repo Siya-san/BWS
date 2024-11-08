@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:gravity="center_horizontal|center_vertical"
+   android:padding="35dp"
     android:orientation="vertical"
 
     tools:context="com.example.bws.ui.Login">
@@ -16,7 +16,7 @@
         android:id="@+id/editTextEmailL"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="10dp"
         android:autofillHints="@string/email"
         android:background="@drawable/text_input"
         android:hint="@string/email"
@@ -30,14 +30,16 @@
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:layout_margin="16dp"
+
+        android:layout_marginBottom="10dp"
         android:hint="@string/password"
         android:inputType="textPassword"
         android:background="@drawable/text_input"
         android:padding="15dp"
         android:textColor="@color/green"
         android:textColorHint="@color/green"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/buttonLogin"
@@ -45,19 +47,21 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:textSize="20sp"
+        android:textColor="@color/black"
         android:text="@string/login" />
 
+    <!-- ProgressBar for loading animation -->
     <Button
         android:id="@+id/buttonGoRegistration"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
 
         android:layout_gravity="center|bottom"
-
         android:layout_marginTop="50dp"
         android:background="@drawable/text_input"
-        android:text="@string/nav_register" />
-    <!-- ProgressBar for loading animation -->
+        android:text="@string/nav_register"
+        android:textColor="@color/black" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
