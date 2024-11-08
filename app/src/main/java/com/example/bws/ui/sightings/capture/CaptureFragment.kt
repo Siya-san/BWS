@@ -125,9 +125,9 @@ class CaptureFragment : Fragment() {
 
                     // Prepare the bird sighting object
 
-                        birdSighting.setUser(uid)
-                        birdSighting.setName(name.text.toString())
-                        birdSighting.setGeo_point(geoPoint) // Include the user's location
+                    birdSighting.setUser(uid)
+                    birdSighting.setName(name.text.toString())
+                    birdSighting.setGeo_point(geoPoint) // Include the user's location
 
 
 
